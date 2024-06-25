@@ -4,6 +4,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "CompareTwoBuildScans"
+rootProject.name = "CompareScans"
 include("library")
 include("cli")
