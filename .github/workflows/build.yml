@@ -62,7 +62,7 @@ jobs:
             - name: Execute Gradle build
               run:  |
                 ./gradlew :cli:fatBinary
-                ./cli/comparescans --first-build-scan np6wp7lvdthfq --second-build-scan gob4uitvdikis  --api-key=${{ secrets.GE_API_KEY }} --url=${{ secrets.GE_URL }} --project=nowinandroid
+                ./cli/comparescans --first-build-scan np6wp7lvdthfq --second-build-scan gob4uitvdikis  --api-key=${{ secrets.GE_API_KEY }} --url=${{ secrets.GE_URL }}
             - name: Archive production artifacts
               uses: actions/upload-artifact@v4
               with:
