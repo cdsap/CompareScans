@@ -168,7 +168,9 @@ The CLI contains the following default rules:
 | Project    | Counter        | N/A       | N/A   |
 | TaskType   | Counter        | N/A       | N/A   |
 
-<b>Note</b>: `threshold` and `value` are not considered for type `Counter`.
+<b>Notes</b>:
+* `threshold` and `value` are not considered for type `Counter`.
+* `threshold` represents milliseconds for `Duration` and `Percentiles` metrics, and bytes for `CacheSize` metrics.
 
 Additional to the csv file, If rules are matching the metrics, the CLI will output:
 ```kotlin
