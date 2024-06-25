@@ -1,0 +1,9 @@
+rules:
+    - entity: Module
+      type: CacheSize
+      threshold: 10000
+      value: 50
+    - entity: Project
+      type: CacheSize
+    - entity: Project
+      type: Counter
