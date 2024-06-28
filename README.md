@@ -18,7 +18,7 @@ By comparing two build scans, you can infer information such as differences in t
 ### Download the CLI
 ```sh
 
- curl -L https://github.com/cdsap/CompareScans/releases/download/v0.1.0/comparescans --output comparescans
+ curl -L https://github.com/cdsap/CompareScans/releases/download/v0.1.1/comparescans --output comparescans
  chmod 0757 comparescans
 
 # Generate Metrics for two build scans using the DV API
@@ -208,7 +208,7 @@ Additional to the csv file, If rules are matching the metrics, the CLI will outp
 If you don't want to use the CLI, the project can be used as a dependency. The project is available in the Maven Central Repository. You can add the dependency to your project using the following coordinates:
 
 ```kotlin
-implementation("io.github.cdsap:comparescans:0.1.0")
+implementation("io.github.cdsap:comparescans:0.1.1")
 ```
 
 ## Notes
