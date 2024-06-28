@@ -1,0 +1,67 @@
+rule entity,rule type, name, category, diff,first build,second build,first build raw,second build raw, description
+Task,Duration,:core:model:compileKotlin,,42.78%,21.067s,13.643s,21067,13643,Threshold: 5000 Value > 10%
+Task,Duration,:app:checkProdDebugAarMetadata,,14.42%,6.156s,5.328s,6156,5328,Threshold: 5000 Value > 10%
+Task,Duration,:ui-test-hilt-manifest:kspProdDebugKotlin,,39.86%,12.91s,8.619s,12910,8619,Threshold: 5000 Value > 10%
+Task,Duration,:core:analytics:kspProdDebugKotlin,,56.12%,10.225s,5.744s,10225,5744,Threshold: 5000 Value > 10%
+Task,Duration,:core:database:kspProdDebugKotlin,,28.79%,10.685s,7.996s,10685,7996,Threshold: 5000 Value > 10%
+Task,Duration,:core:database:compileProdDebugKotlin,,44.27%,12.938s,8.248s,12938,8248,Threshold: 5000 Value > 10%
+Task,Duration,:core:designsystem:compileProdDebugKotlin,,34.4%,24.947s,17.624s,24947,17624,Threshold: 5000 Value > 10%
+Task,Duration,:core:common:testProdDebugUnitTest,,36.92%,8.532s,5.873s,8532,5873,Threshold: 5000 Value > 10%
+Task,Duration,:feature:interests:compileProdDebugJavaWithJavac,,25.33%,8.179s,6.34s,8179,6340,Threshold: 5000 Value > 10%
+Task,Duration,:feature:bookmarks:compileProdDebugJavaWithJavac,,18.1%,7.458s,6.22s,7458,6220,Threshold: 5000 Value > 10%
+Task,Duration,:core:datastore:testProdDebugUnitTest,,38.32%,8.703s,5.904s,8703,5904,Threshold: 5000 Value > 10%
+Task,Duration,:app:kspProdDebugKotlin,,18.5%,8.982s,7.461s,8982,7461,Threshold: 5000 Value > 10%
+Task,Duration,:core:screenshot-testing:kspProdDebugKotlin,,33.39%,7.073s,5.049s,7073,5049,Threshold: 5000 Value > 10%
+Task,Duration,:core:data:testProdDebugUnitTest,,41.55%,12.804s,8.399s,12804,8399,Threshold: 5000 Value > 10%
+Task,Duration,:core:designsystem:testProdDebugUnitTest,,14.56%,1m 5.489s,56.603s,65489,56603,Threshold: 5000 Value > 10%
+Task,Duration,:app:hiltJavaCompileProdDebug,,48.93%,9.196s,5.581s,9196,5581,Threshold: 5000 Value > 10%
+Task,Duration,:core:screenshot-testing:hiltAggregateDepsProdDebugUnitTest,,54.24%,9.756s,5.593s,9756,5593,Threshold: 5000 Value > 10%
+TaskType,Duration,KotlinCompile,all outcomes,29.47%,2m 54.217s,2m 9.474s,174217,129474,Threshold: 5000 Value > 10%
+TaskType,Duration,KotlinCompile,executed_cacheable,29.45%,2m 54.141s,2m 9.435s,174141,129435,Threshold: 5000 Value > 10%
+TaskType,Duration,JavaCompile,all outcomes,38.86%,1m 12.941s,49.209s,72941,49209,Threshold: 5000 Value > 10%
+TaskType,Duration,JavaCompile,executed_cacheable,38.91%,1m 12.782s,49.076s,72782,49076,Threshold: 5000 Value > 10%
+TaskType,Duration,CheckAarMetadataTask,all outcomes,15.36%,6.764s,5.799s,6764,5799,Threshold: 5000 Value > 10%
+TaskType,Duration,CheckAarMetadataTask,executed_not_cacheable,15.36%,6.764s,5.799s,6764,5799,Threshold: 5000 Value > 10%
+TaskType,Duration,MergeResources,all outcomes,42.26%,34.975s,22.774s,34975,22774,Threshold: 5000 Value > 10%
+TaskType,Duration,MergeResources,executed_cacheable,42.26%,34.975s,22.774s,34975,22774,Threshold: 5000 Value > 10%
+TaskType,Duration,KspTaskJvm,all outcomes,28.87%,2m 1.936s,1m 31.17s,121936,91170,Threshold: 5000 Value > 10%
+TaskType,Duration,KspTaskJvm,executed_cacheable,28.88%,2m 1.868s,1m 31.118s,121868,91118,Threshold: 5000 Value > 10%
+TaskType,Duration,LinkApplicationAndroidResourcesTask,all outcomes,36.38%,16.153s,11.181s,16153,11181,Threshold: 5000 Value > 10%
+TaskType,Duration,LinkApplicationAndroidResourcesTask,executed_cacheable,36.38%,16.153s,11.181s,16153,11181,Threshold: 5000 Value > 10%
+TaskType,Duration,TransformClassesWithAsmTask,all outcomes,39.72%,22.547s,15.076s,22547,15076,Threshold: 5000 Value > 10%
+TaskType,Duration,TransformClassesWithAsmTask,executed_cacheable,39.72%,22.547s,15.076s,22547,15076,Threshold: 5000 Value > 10%
+TaskType,Duration,AggregateDepsTask,all outcomes,32.4%,20.849s,15.036s,20849,15036,Threshold: 5000 Value > 10%
+TaskType,Duration,AggregateDepsTask,executed_cacheable,32.4%,20.849s,15.036s,20849,15036,Threshold: 5000 Value > 10%
+TaskType,Duration,AndroidUnitTest,all outcomes,18.19%,3m 9.567s,2m 37.961s,189567,157961,Threshold: 5000 Value > 10%
+TaskType,Duration,AndroidUnitTest,executed_cacheable,33.06%,1m 18.432s,56.183s,78432,56183,Threshold: 5000 Value > 10%
+Module,Duration,:core:model,all tasks,42.7%,21.093s,13.671s,21093,13671,Threshold: 10000 Value > 20%
+Module,Duration,:ui-test-hilt-manifest,all tasks,51.14%,29.836s,17.684s,29836,17684,Threshold: 10000 Value > 20%
+Module,Duration,:core:analytics,all tasks,37.33%,34s,23.304s,34000,23304,Threshold: 10000 Value > 20%
+Module,Duration,:core:common,all tasks,43.29%,28.986s,18.671s,28986,18671,Threshold: 10000 Value > 20%
+Module,Duration,:core:data,all tasks,36.73%,38.263s,26.39s,38263,26390,Threshold: 10000 Value > 20%
+Module,Duration,:core:database,all tasks,35.08%,25.727s,18.049s,25727,18049,Threshold: 10000 Value > 20%
+Module,Duration,:core:datastore,all tasks,37.31%,19.977s,13.695s,19977,13695,Threshold: 10000 Value > 20%
+Module,Duration,:core:designsystem,all tasks,20.21%,1m 43.979s,1m 24.897s,103979,84897,Threshold: 10000 Value > 20%
+Module,Duration,:core:network,all tasks,24.42%,21.4s,16.742s,21400,16742,Threshold: 10000 Value > 20%
+Module,Duration,:feature:bookmarks,all tasks,23.52%,28.582s,22.567s,28582,22567,Threshold: 10000 Value > 20%
+Module,Duration,:feature:search,all tasks,61.17%,27.724s,14.738s,27724,14738,Threshold: 10000 Value > 20%
+Module,Duration,:feature:settings,all tasks,33.36%,20.364s,14.542s,20364,14542,Threshold: 10000 Value > 20%
+Module,Duration,:feature:topic,all tasks,28.94%,18.873s,14.102s,18873,14102,Threshold: 10000 Value > 20%
+Module,Duration,:core:testing,all tasks,23.19%,13.911s,11.02s,13911,11020,Threshold: 10000 Value > 20%
+Module,Duration,:core:screenshot-testing,all tasks,37.42%,23.221s,15.901s,23221,15901,Threshold: 10000 Value > 20%
+Module,Duration,:core:model,executed_cacheable,42.78%,21.067s,13.643s,21067,13643,Threshold: 10000 Value > 20%
+Module,Duration,:ui-test-hilt-manifest,executed_cacheable,53.22%,29.552s,17.13s,29552,17130,Threshold: 10000 Value > 20%
+Module,Duration,:core:analytics,executed_cacheable,40.27%,30.992s,20.603s,30992,20603,Threshold: 10000 Value > 20%
+Module,Duration,:core:common,executed_cacheable,44.83%,28.685s,18.18s,28685,18180,Threshold: 10000 Value > 20%
+Module,Duration,:core:data,executed_cacheable,36.6%,36.865s,25.459s,36865,25459,Threshold: 10000 Value > 20%
+Module,Duration,:core:database,executed_cacheable,35.22%,25.56s,17.905s,25560,17905,Threshold: 10000 Value > 20%
+Module,Duration,:core:datastore,executed_cacheable,37.19%,19.828s,13.61s,19828,13610,Threshold: 10000 Value > 20%
+Module,Duration,:core:designsystem,executed_cacheable,32.46%,38.035s,27.412s,38035,27412,Threshold: 10000 Value > 20%
+Module,Duration,:core:network,executed_cacheable,24.11%,20.932s,16.428s,20932,16428,Threshold: 10000 Value > 20%
+Module,Duration,:feature:foryou,executed_cacheable,24.57%,24.725s,19.315s,24725,19315,Threshold: 10000 Value > 20%
+Module,Duration,:feature:bookmarks,executed_cacheable,22.45%,27.676s,22.09s,27676,22090,Threshold: 10000 Value > 20%
+Module,Duration,:feature:search,executed_cacheable,61.46%,27.171s,14.397s,27171,14397,Threshold: 10000 Value > 20%
+Module,Duration,:feature:settings,executed_cacheable,34.04%,20.009s,14.189s,20009,14189,Threshold: 10000 Value > 20%
+Module,Duration,:feature:topic,executed_cacheable,28.11%,18.399s,13.865s,18399,13865,Threshold: 10000 Value > 20%
+Module,Duration,:core:testing,executed_cacheable,22.05%,13.489s,10.81s,13489,10810,Threshold: 10000 Value > 20%
+Module,Duration,:core:screenshot-testing,executed_cacheable,38.01%,22.897s,15.584s,22897,15584,Threshold: 10000 Value > 20%

@@ -95,7 +95,7 @@ Module,:build-logic-commons:gradle-plugin,all tasks,Counter,12,12
 Module,:build-logic-commons:gradle-plugin,all tasks,Fingerprinting,5762,5762
 ...
 ```
-Complete example of a metrics output comparing two builds of the Nowinandroid project available [here](resources/compare-pxt3zsp52gdoy-7ya7rlpa3qqco.csv).
+Complete example of a metrics output comparing two builds of the Nowinandroid project available [here](resources/metrics-pxt3zsp52gdoy-7ya7rlpa3qqco.csv).
 
 Check the [Metrics](#metrics) section for more information about the metrics generated.
 
@@ -171,6 +171,10 @@ The CLI contains the following default rules:
 <b>Notes</b>:
 * `threshold` and `value` are not considered for type `Counter`.
 * `threshold` represents milliseconds for `Duration` and `Percentiles` metrics, and bytes for `CacheSize` metrics.
+
+If rules are matched, the CLI will generate a csv files with the metrics that match the rules. Example [csv output](resources/matched-rules-first build-second build.csv) applying default rules to two build of the Nowinandroid project.
+
+```csv
 
 Additional to the csv file, If rules are matching the metrics, the CLI will output:
 ```kotlin
