@@ -53,7 +53,6 @@ cd cli
 
 ```
 
-
 ## Options
 
 The CLI supports the following options:
