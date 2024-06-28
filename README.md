@@ -88,25 +88,16 @@ Example command:
 
 When using the CLI with the `--from api` option a file with the name `compare-$BUILD_SCAN_ID_1-$BUILD_SCAN_ID_2.csv` will be generated in the current directory. This file contains the metrics for the two build scans. For instance:
 ```csv
-entity,name,outcome,type,4n4obiokjzzs4,4n4obiokjzzs4
-Module,:build-logic-commons:gradle-plugin,all tasks,CacheSize,173642,173642
-Module,:build-logic-commons:gradle-plugin,all tasks,Duration,24206,24206
-Module,:build-logic-commons:gradle-plugin,all tasks,Counter,12,12
-Module,:build-logic-commons:gradle-plugin,all tasks,Fingerprinting,5762,5762
+entity,name,category,type,first build,second build
+Module,:build-logic:convention,all tasks,CacheSize,168857,168960
+Module,:build-logic:convention,all tasks,Duration,18272,17474
+Module,:build-logic:convention,all tasks,Counter,7,7
 ...
 ```
 Complete example of a metrics output comparing two builds of the Nowinandroid project available [here](resources/metrics-pxt3zsp52gdoy-7ya7rlpa3qqco.csv).
 
 Check the [Metrics](#metrics) section for more information about the metrics generated.
 
-If [Rules](#rules) are applied, the CLI will output the metrics that match the rules. The output will contain the rules that matched and the summary of the rules. For instance:
-```csv
-rule entity,rule type, name, category, diff,pxt3zsp52gdoy,7ya7rlpa3qqco,pxt3zsp52gdoy raw,7ya7rlpa3qqco raw, description
-TaskType,CacheSize,all outcomes,JavaCompile,7.18%,14.32 KB,15.38 KB,14660,15752,Threshold: 10240 Value > 5%
-Module,CacheSize,All tasks,:kotlin-compiler-embeddable,35.2%,55.74 MB,79.56 MB,58449627,83422358,Threshold: 102400 Value > 20%
-Module,CacheSize,All tasks,:compiler:ir.tree:tree-generator,23.22%,279.56 KB,353.00 KB,286265,361467,Threshold: 102400 Value > 20%
-...
-```
 
 ### File Mode
 
@@ -172,7 +163,7 @@ The CLI contains the following default rules:
 * `threshold` and `value` are not considered for type `Counter`.
 * `threshold` represents milliseconds for `Duration` and `Percentiles` metrics, and bytes for `CacheSize` metrics.
 
-If rules are matched, the CLI will generate a csv files with the metrics that match the rules. Example [csv output](resources/matched-rules-first build-second build.csv) applying default rules to two build of the Nowinandroid project.
+If rules are matched, the CLI will generate a csv file with the metrics that match the rules. Example [csv output](resources/matched-rules-first build-second build.csv) applying default rules to two build of the Nowinandroid project.
 
 
 Additional to the csv file, If rules are matching the metrics, the CLI will output:
