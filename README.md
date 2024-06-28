@@ -130,14 +130,14 @@ a file with the name `metrics-$firstBuild-$secondBuild.csv` in the current direc
 ## Metrics
 A `Metric` represents a measurement or statistic related to different aspects of a project, module, task, or task type within a build scan. Each metric is categorized by its entity type, metric type, and includes values from two builds for comparison.
 
-| Attribute    | Description                                                                                                                                                                                                          |
-|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `entity`     | The entity that this metric is associated with. It can be one of: `Project`, `Module`, `Task`, `TaskType`.                                                                                                           |
-| `type`       | The type of measurement. It can be one of: `Duration`, `DurationMedian`, `DurationMean`, `DurationP90`, `Counter`, `Fingerprinting`, `FingerprintingMedian`, `FingerprintingMean`, `FingerprintingP90`, `CacheSize`. |
-| `subcategory`| A string representing a subcategory or additional classification for the metric.                                                                                                                                     |
-| `name`       | The name of the metric.                                                                                                                                                                                              |
-| `firstBuild` | The value of the metric for the first build.                                                                                                                                                                         |
-| `secondBuild`| The value of the metric for the second build.                                                                                                                                                                        |
+| Attribute     | Description                                                                                                                                                                                                          |
+|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `entity`      | The entity that this metric is associated with. It can be one of: `Project`, `Module`, `Task`, `TaskType`.                                                                                                           |
+| `type`        | The type of measurement. It can be one of: `Duration`, `DurationMedian`, `DurationMean`, `DurationP90`, `Counter`, `Fingerprinting`, `FingerprintingMedian`, `FingerprintingMean`, `FingerprintingP90`, `CacheSize`. |
+| `category`    | A string representing a category or additional classification for the metric.                                                                                                                                        |
+| `name`        | The name of the metric.                                                                                                                                                                                              |
+| `firstBuild`  | The value of the metric for the first build.                                                                                                                                                                         |
+| `secondBuild` | The value of the metric for the second build.                                                                                                                                                                        |
 
 
 ## Rules
@@ -174,7 +174,6 @@ The CLI contains the following default rules:
 
 If rules are matched, the CLI will generate a csv files with the metrics that match the rules. Example [csv output](resources/matched-rules-first build-second build.csv) applying default rules to two build of the Nowinandroid project.
 
-```csv
 
 Additional to the csv file, If rules are matching the metrics, the CLI will output:
 ```kotlin

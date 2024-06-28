@@ -1,4 +1,4 @@
-entity,name,subcategory,type,first build,second build
+entity,name,category,type,first build,second build
 Module,:build-logic:convention,all tasks,CacheSize,168857,168960
 Module,:build-logic:convention,all tasks,Duration,18272,17474
 Module,:build-logic:convention,all tasks,Counter,7,7
