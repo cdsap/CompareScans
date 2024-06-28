@@ -25,6 +25,18 @@ class TaskMetricsCollector {
                         secondBuild = taskSecond.duration
                     )
                 )
+                if (outcome.cacheArtifactSize != null || taskSecond.cacheArtifactSize != null) {
+                    metrics.add(
+                        Metric(
+                            entity = Entity.Task,
+                            type = TypeMetric.CacheSize,
+                            subcategory = "",
+                            name = outcome.taskPath,
+                            firstBuild = if (outcome.cacheArtifactSize != null) outcome.cacheArtifactSize!! else 0L,
+                            secondBuild = if (taskSecond.cacheArtifactSize != null) taskSecond.cacheArtifactSize!! else 0L
+                        )
+                    )
+                }
             }
         }
         return metrics
