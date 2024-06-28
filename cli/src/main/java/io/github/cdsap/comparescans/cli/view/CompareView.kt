@@ -44,7 +44,7 @@ class CompareView(
                 cell("Rule Entity")
                 cell("Rule Type")
                 cell("Name")
-                cell("Subcategory")
+                cell("Category")
                 cell("Diff")
                 cell("Build $firstBuild")
                 cell("Build $secondBuild")

@@ -12,7 +12,7 @@ import kotlin.time.toDuration
 class CsvWriter(private val firstBuildScan: String, private val secondBuildScan: String) {
 
     fun metricsCsv(metrics: List<Metric>) {
-        val prefixFile = "compare-$firstBuildScan-$secondBuildScan"
+        val prefixFile = "metrics-$firstBuildScan-$secondBuildScan"
         val csv = "$prefixFile.csv"
         val headers =
             "entity,name,category,type,$firstBuildScan,$secondBuildScan\n"
@@ -96,7 +96,7 @@ class CsvWriter(private val firstBuildScan: String, private val secondBuildScan:
                 }
 
                 val line =
-                    "${matched.rule.entity},${matched.rule.type},${matched.metric.subcategory},$name,$diffFormatted,$firstBuild,$secondBuild,${matched.metric.firstBuild},${matched.metric.secondBuild},${desc}\n"
+                    "${matched.rule.entity},${matched.rule.type},$name,${matched.metric.subcategory},$diffFormatted,$firstBuild,$secondBuild,${matched.metric.firstBuild},${matched.metric.secondBuild},${desc}\n"
                 out.write(line)
             }
         }
