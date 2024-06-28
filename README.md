@@ -37,7 +37,7 @@ By comparing two build scans, you can infer information such as differences in t
 ### From sources
 ```sh
 
- ./gradlew :cli:fatBinary
+./gradlew :cli:fatBinary
 cd cli
 # Generate Metrics for two build scans using the DV API
 ./comparescans --from api --first-build-scan $BUILD_SCAN_ID_1 --second-build-scan $BUILD_SCAN_ID_2 --api-key $DV_KEY --url $DV_URL
