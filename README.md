@@ -95,7 +95,7 @@ Module,:build-logic-commons:gradle-plugin,all tasks,Counter,12,12
 Module,:build-logic-commons:gradle-plugin,all tasks,Fingerprinting,5762,5762
 ...
 ```
-Complete example of a metrics output comparing two builds of the Kotlin project available [here](resources/compare-pxt3zsp52gdoy-7ya7rlpa3qqco.csv).
+Complete example of a metrics output comparing two builds of the Nowinandroid project available [here](resources/compare-pxt3zsp52gdoy-7ya7rlpa3qqco.csv).
 
 Check the [Metrics](#metrics) section for more information about the metrics generated.
 
@@ -122,7 +122,7 @@ When `--from` is set to `file`, the CLI reads metrics from a CSV file. The follo
 
 
 Using the mode `--from file` we apply rules over an existing metrics comparison file from a previous execution. This mode also generates
-a file with the name `compare-metrics.csv` in the current directory.
+a file with the name `metrics-$firstBuild-$secondBuild.csv` in the current directory.
 
 <b>Note</b>: This mode is required to be used together with the rules functionality that is explained in the Rules section.
 
