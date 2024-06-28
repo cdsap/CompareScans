@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.cdsap"
-version = "0.1.0"
+version = "0.1.1"
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
