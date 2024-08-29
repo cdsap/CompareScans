@@ -6,13 +6,12 @@ import io.github.cdsap.compare2buildscans.output.formatBytes
 import io.github.cdsap.comparescans.model.Entity
 import io.github.cdsap.comparescans.model.TypeMetric
 import io.github.cdsap.comparescans.rules.RuleMatched
+import java.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 class CompareView(
-    private val rulesMatched: List<RuleMatched>,
-    private val firstBuild: String,
-    private val secondBuild: String
+    private val rulesMatched: List<RuleMatched>
 ) {
 
     fun print() {
@@ -27,6 +26,12 @@ class CompareView(
     fun generateReport() = table()
 
     private fun table() = table {
+        val buildIds = rulesMatched.flatMap { it.metric.values.keys }.distinct()
+        require(buildIds.size == 2) { "This implementation only supports exactly two builds." }
+
+        val firstBuildId = buildIds[0]
+        val secondBuildId = buildIds[1]
+
         cellStyle {
             border = true
             alignment = TextAlignment.MiddleLeft
@@ -46,14 +51,14 @@ class CompareView(
                 cell("Name")
                 cell("Category")
                 cell("Diff")
-                cell("Build $firstBuild")
-                cell("Build $secondBuild")
+                cell("Build $firstBuildId")
+                cell("Build $secondBuildId")
             }
-            rulesMatched.sortedBy { it.metric.entity }.forEach {
+            rulesMatched.sortedBy { it.metric.metric.entity }.forEach {
                 row {
                     val diffFormatted = when (it.diff) {
                         is Double -> {
-                            if (it.metric.type == TypeMetric.Counter) {
+                            if (it.metric.metric.type == TypeMetric.Counter) {
                                 (it.diff as Double).toInt()
                             } else {
                                 "${it.diff}%"
@@ -64,43 +69,46 @@ class CompareView(
                         }
                     }
 
+                    val name = if (it.metric.metric.entity == Entity.TaskType) {
+                        it.metric.metric.name.substringAfterLast(".")
+                    } else {
+                        formatStringWithNewlines(it.metric.metric.name)
+                    }
+
+                    val firstBuildValue = it.metric.values[firstBuildId]?.toLong()
+                    val secondBuildValue = it.metric.values[secondBuildId]?.toLong()
+
+                    val firstBuildDisplay = if (firstBuildValue != null) {
+                        when (it.metric.metric.type) {
+                            TypeMetric.Counter -> firstBuildValue
+                            TypeMetric.CacheSize -> formatBytes(firstBuildValue)
+                            else -> Duration.ofMillis(firstBuildValue).toString()
+                        }
+                    } else {
+                        "N/A"
+                    }
+
+                    val secondBuildDisplay = if (secondBuildValue != null) {
+                        when (it.metric.metric.type) {
+                            TypeMetric.Counter -> secondBuildValue
+                            TypeMetric.CacheSize -> formatBytes(secondBuildValue)
+                            else -> Duration.ofMillis(secondBuildValue).toString()
+                        }
+                    } else {
+                        "N/A"
+                    }
+
                     cell(it.rule.entity)
                     cell(it.rule.type)
-                    cell(
-                        if (it.metric.entity == Entity.TaskType) {
-                            it.metric.name.substringAfterLast(".")
-                        } else {
-                            formatStringWithNewlines(it.metric.name)
-                        }
-                    )
-                    cell(it.metric.subcategory)
+                    cell(name)
+                    cell(it.metric.metric.subcategory)
                     cell(diffFormatted) {
                         alignment = TextAlignment.MiddleRight
                     }
-                    cell(
-                        if (it.metric.type == TypeMetric.Counter) {
-                            it.metric.firstBuild
-                        } else if (it.metric.type == TypeMetric.CacheSize) {
-                            formatBytes(it.metric.firstBuild.toLong())
-                        } else {
-                            it.metric.firstBuild.toLong().toDuration(
-                                DurationUnit.MILLISECONDS
-                            )
-                        }
-                    ) {
+                    cell(firstBuildDisplay) {
                         alignment = TextAlignment.MiddleRight
                     }
-                    cell(
-                        if (it.metric.type == TypeMetric.Counter) {
-                            it.metric.secondBuild
-                        } else if (it.metric.type == TypeMetric.CacheSize) {
-                            formatBytes(it.metric.secondBuild.toLong())
-                        } else {
-                            it.metric.secondBuild.toLong().toDuration(
-                                DurationUnit.MILLISECONDS
-                            )
-                        }
-                    ) {
+                    cell(secondBuildDisplay) {
                         alignment = TextAlignment.MiddleRight
                     }
                 }

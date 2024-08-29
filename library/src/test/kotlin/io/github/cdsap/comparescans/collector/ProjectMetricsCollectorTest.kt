@@ -17,7 +17,7 @@ class ProjectMetricsCollectorTest {
         val outcomesSecond = secondBuildTasks.groupBy { it.avoidanceOutcome }.flatMap { listOf(it.key) }.distinct()
         val outcomes = outcomesFirst.union(outcomesSecond)
 
-        val metric = ProjectMetricsCollector().projectMetrics(firstBuildTasks, secondBuildTasks, outcomes)
+        val metric = ProjectMetricsCollector().compareProjectMetrics(firstBuildTasks, secondBuildTasks, outcomes)
         val firstBuildModules =
             firstBuild.taskExecution.groupBy { it.taskPath.split(":").dropLast(1).joinToString(":") }.count()
         val secondBuildModules =
@@ -48,7 +48,7 @@ class ProjectMetricsCollectorTest {
         val outcomesSecond = secondBuildTasks.groupBy { it.avoidanceOutcome }.flatMap { listOf(it.key) }.distinct()
         val outcomes = outcomesFirst.union(outcomesSecond)
 
-        val metric = ProjectMetricsCollector().projectMetrics(firstBuildTasks, secondBuildTasks, outcomes)
+        val metric = ProjectMetricsCollector().compareProjectMetrics(firstBuildTasks, secondBuildTasks, outcomes)
         val p90 = metric.first { it.entity == Entity.Project && it.type == TypeMetric.DurationP90 }
         assert(p90.firstBuild == 99.0)
         val median = metric.first { it.entity == Entity.Project && it.type == TypeMetric.DurationMedian }

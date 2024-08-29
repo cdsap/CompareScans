@@ -1,7 +1,7 @@
 package io.github.cdsap.compare2buildscans.output
 
 import io.github.cdsap.comparescans.model.Entity
-import io.github.cdsap.comparescans.model.Metric
+import io.github.cdsap.comparescans.model.MultipleBuildScanMetric
 import io.github.cdsap.comparescans.model.TypeMetric
 import io.github.cdsap.comparescans.rules.RuleMatched
 import java.io.BufferedWriter
@@ -9,19 +9,23 @@ import java.io.File
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-class CsvWriter(private val firstBuildScan: String, private val secondBuildScan: String) {
+class CsvWriter() {
 
-    fun metricsCsv(metrics: List<Metric>) {
-        val prefixFile = "metrics-$firstBuildScan-$secondBuildScan"
+    fun metricsCsvMultipleScans(metrics: List<MultipleBuildScanMetric>, buildScans: List<String>) {
+        val prefixFile = "metrics-${buildScans.joinToString("-")}"
         val csv = "$prefixFile.csv"
-        val headers =
-            "entity,name,category,type,$firstBuildScan,$secondBuildScan\n"
+        val headers = "entity,name,category,type,${buildScans.joinToString(",")}\n"
         val startTimestamp = System.currentTimeMillis()
         File(csv).bufferedWriter().use { out: BufferedWriter ->
             out.write(headers)
             metrics.forEach { metric ->
-                val line =
-                    "${metric.entity.name},${metric.name},${metric.subcategory},${metric.type.name},${metric.firstBuild},${metric.secondBuild}\n"
+                val line = buildString {
+                    append("${metric.metric.entity.name},${metric.metric.name},${metric.metric.subcategory},${metric.metric.type.name}")
+                    buildScans.forEach { buildScan ->
+                        append(",${metric.values[buildScan] ?: -1L}")
+                    }
+                    append("\n")
+                }
                 out.write(line)
             }
         }
@@ -29,7 +33,11 @@ class CsvWriter(private val firstBuildScan: String, private val secondBuildScan:
         println("File $csv created in ${endTime - startTimestamp} ms")
     }
 
-    fun matchedRulesCsv(matchedRules: List<RuleMatched>) {
+    fun matchedRulesCsv(
+        matchedRules: List<RuleMatched>,
+        firstBuildScan: String,
+        secondBuildScan: String
+    ) {
         val prefixFile = "matched-rules-$firstBuildScan-$secondBuildScan"
         val csv = "$prefixFile-${System.currentTimeMillis()}.csv"
         val headers =
@@ -38,43 +46,46 @@ class CsvWriter(private val firstBuildScan: String, private val secondBuildScan:
         File(csv).bufferedWriter().use { out: BufferedWriter ->
             out.write(headers)
             matchedRules.forEach { matched ->
-
                 val diffFormatted = when (matched.diff) {
                     is Double -> {
-                        if (matched.metric.type == TypeMetric.Counter) {
+                        if (matched.metric.metric.type == TypeMetric.Counter) {
                             (matched.diff as Double).toInt()
                         } else {
                             "${matched.diff}%"
                         }
                     }
-
                     else -> {
                         ""
                     }
                 }
-                val name = if (matched.metric.entity == Entity.TaskType) {
-                    matched.metric.name.substringAfterLast(".")
+
+                val name = if (matched.metric.metric.entity == Entity.TaskType) {
+                    matched.metric.metric.name.substringAfterLast(".")
                 } else {
-                    matched.metric.name
+                    matched.metric.metric.name
                 }
 
-                val firstBuild = if (matched.metric.type == TypeMetric.Counter) {
-                    matched.metric.firstBuild
-                } else if (matched.metric.type == TypeMetric.CacheSize) {
-                    formatBytes(matched.metric.firstBuild.toLong())
+                val firstBuildValue = matched.metric.values[firstBuildScan]?.toLong()
+                val secondBuildValue = matched.metric.values[secondBuildScan]?.toLong()
+
+                val firstBuild = if (firstBuildValue != null) {
+                    when (matched.metric.metric.type) {
+                        TypeMetric.Counter -> firstBuildValue
+                        TypeMetric.CacheSize -> formatBytes(firstBuildValue)
+                        else -> firstBuildValue.toDuration(DurationUnit.MILLISECONDS)
+                    }
                 } else {
-                    matched.metric.firstBuild.toLong().toDuration(
-                        DurationUnit.MILLISECONDS
-                    )
+                    "N/A"
                 }
-                val secondBuild = if (matched.metric.type == TypeMetric.Counter) {
-                    matched.metric.secondBuild
-                } else if (matched.metric.type == TypeMetric.CacheSize) {
-                    formatBytes(matched.metric.secondBuild.toLong())
+
+                val secondBuild = if (secondBuildValue != null) {
+                    when (matched.metric.metric.type) {
+                        TypeMetric.Counter -> secondBuildValue
+                        TypeMetric.CacheSize -> formatBytes(secondBuildValue)
+                        else -> secondBuildValue.toDuration(DurationUnit.MILLISECONDS)
+                    }
                 } else {
-                    matched.metric.secondBuild.toLong().toDuration(
-                        DurationUnit.MILLISECONDS
-                    )
+                    "N/A"
                 }
 
                 var desc = ""
@@ -89,14 +100,15 @@ class CsvWriter(private val firstBuildScan: String, private val secondBuildScan:
                             desc += "Value > ${matched.rule.value}%"
                         }
                     }
-
                     TypeMetric.Counter -> {
                         desc += "Counter diff"
                     }
+                    // not covering resource usage metrics
+                    else -> {
+                    }
                 }
 
-                val line =
-                    "${matched.rule.entity},${matched.rule.type},$name,${matched.metric.subcategory},$diffFormatted,$firstBuild,$secondBuild,${matched.metric.firstBuild},${matched.metric.secondBuild},${desc}\n"
+                val line = "${matched.rule.entity},${matched.rule.type},$name,${matched.metric.metric.subcategory},$diffFormatted,$firstBuild,$secondBuild,${firstBuildValue ?: "N/A"},${secondBuildValue ?: "N/A"},${desc}\n"
                 out.write(line)
             }
         }

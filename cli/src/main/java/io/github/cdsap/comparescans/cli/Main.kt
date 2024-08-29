@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.choice
@@ -13,7 +14,7 @@ import com.github.ajalt.clikt.parameters.types.file
 import io.github.cdsap.compare2buildscans.output.CsvWriter
 import io.github.cdsap.comparescans.cli.model.RulesYaml
 import io.github.cdsap.comparescans.cli.view.CompareView
-import io.github.cdsap.comparescans.model.Metric
+import io.github.cdsap.comparescans.model.MultipleBuildScanMetric
 import io.github.cdsap.comparescans.model.Rule
 import io.github.cdsap.comparescans.rules.DefaultRules
 import io.github.cdsap.comparescans.rules.RuleMatched
@@ -23,17 +24,29 @@ import java.io.File
 
 fun main(args: Array<String>) {
     Experiment().main(args)
+//    val gson = Gson()
+//    val buildListType = object : TypeToken<List<BuildWithResourceUsage>>() {}.type
+//    GetApiMetrics(apiKey!!, url!!, scans).getMetrics()
+// //    val data: List<BuildWithResourceUsage> = gson.fromJson(File("builds.json").readText(), buildListType)
+// //
+// //
+// //    val a = MultipleScanMetrics(data).get()
+// //    a.filter { it.metric.entity == Entity.Project }.forEach {
+// //        println("-")
+// //        println(it.metric.entity)
+// //        println(it.values)
+// //    }
+//    CsvWriter(CsvWriter).metricsCsvMultipleScans(a, listOf("fqlukj7otcqek", "sctmqbxo3vd4q", "mky4xonu5cuwg", "wc5cbudsoalse"))
 }
 
 class Experiment : CliktCommand() {
     val from by option().choice("api", "file").required()
     private val apiKey by option()
     private val url by option()
-    private val firstBuildScan by option()
-    private val secondBuildScan by option()
     private val withDefaultRules by option().flag(default = false)
     private val customRules by option().file()
     private val metrics by option().file()
+    private val scans by option().multiple()
 
     override fun run() {
         runBlocking {
@@ -44,17 +57,19 @@ class Experiment : CliktCommand() {
 
             val metricsBuild = when (from) {
                 "api" -> {
-                    validate(apiKey != null && url != null && firstBuildScan != null && secondBuildScan != null) {
-                        "Missing required parameters for api: example: --from api --apiKey <apiKey> --url <url> --firstBuildScan <firstBuildScan> --secondBuildScan <secondBuildScan>"
+                    validate(apiKey != null && url != null && (scans != null || scans.isEmpty())) {
+                        "Missing required parameters for api: example: --from api --apiKey <apiKey> --url <url> --scans <firstBuildScan> --scans <secondBuildScan>"
                     }
-                    GetApiMetrics(apiKey!!, url!!, firstBuildScan!!, secondBuildScan!!).getMetrics()
+                    GetApiMetrics(apiKey!!, url!!, scans).getMetrics()
                 }
 
                 "file" -> {
                     validate(metrics != null) {
                         "Missing required parameters for file: example: --from file --existingMetrics <existingMetrics.csv>"
                     }
-                    GetFileMetrics(metrics!!).getMetrics()
+                    val a = GetFileMetrics(metrics!!).getMetrics()
+                    println(a.size)
+                    a
                 }
 
                 else -> {
@@ -66,16 +81,16 @@ class Experiment : CliktCommand() {
 
             if (rulesMatched.isNotEmpty()) {
                 if (from == "api") {
-                    CompareView(rulesMatched, firstBuildScan!!, secondBuildScan!!).print()
-                    CsvWriter(firstBuildScan!!, secondBuildScan!!).matchedRulesCsv(rulesMatched)
+                    CompareView(rulesMatched).print()
+                    CsvWriter().matchedRulesCsv(rulesMatched, scans[0]!!, scans[1]!!)
                 } else {
                     val buildScans = getLastTwoItemsAsPair(metrics!!.readLines().first())
-                    CompareView(rulesMatched, buildScans.first, buildScans.second).print()
-                    CsvWriter(buildScans.first, buildScans.second).matchedRulesCsv(rulesMatched)
+                    CompareView(rulesMatched).print()
+                    CsvWriter().matchedRulesCsv(rulesMatched, buildScans.first, buildScans.second)
                 }
             }
             if (from == "api") {
-                CsvWriter(firstBuildScan!!, secondBuildScan!!).metricsCsv(metricsBuild)
+                CsvWriter().metricsCsvMultipleScans(metricsBuild, scans)
             } else if (from == "file" && customRules == null && !withDefaultRules) {
                 println("No rules provided. If you want to apply rules from existing metrics file, please provide a custom rules with --custom-rules custom-rules.yaml or use the --with-default-rules flag.")
             }
@@ -99,7 +114,7 @@ private fun validate(b: Boolean, function: () -> String) {
 }
 
 private fun applyRulesIfPresent(
-    metrics: List<Metric>,
+    metrics: List<MultipleBuildScanMetric>,
     withDefaultRules: Boolean,
     customRules: File?
 ): List<RuleMatched> {
