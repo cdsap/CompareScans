@@ -1,8 +1,8 @@
 # CompareScans CLI
 
-This project provides a command-line interface (CLI) for comparing two build scans and applying custom rules to analyze the metrics. The CLI supports fetching metrics from the Develocity API or a file and applying default or custom rules to these metrics.
+This project provides a command-line interface (CLI) for comparing build scans and applying custom rules to analyze the metrics. The CLI supports fetching metrics from the Develocity API or a file and applying default or custom rules to these metrics.
 
-By comparing two build scans, you can infer information such as differences in the number of modules, tasks, or even explore detailed percentiles of durations for specific task types. Additionally, the CLI can provide analysis of cache artifact sizes between builds. It is important to note that this type of analysis does not necessarily imply that the builds are close in terms of execution time. Comparing builds from different time ranges can offer valuable insights into how the project has grown over time.
+By comparing build scans, you can infer information such as differences in the number of modules, tasks, or even explore detailed percentiles of durations for specific task types. Additionally, the CLI can provide analysis of cache artifact sizes between builds. It is important to note that this type of analysis does not necessarily imply that the builds are close in terms of execution time. Comparing builds from different time ranges can offer valuable insights into how the project has grown over time.
 ## Table of Contents
 
 
@@ -18,14 +18,17 @@ By comparing two build scans, you can infer information such as differences in t
 ### Download the CLI
 ```sh
 
- curl -L https://github.com/cdsap/CompareScans/releases/download/v0.1.2/comparescans --output comparescans
+ curl -L https://github.com/cdsap/CompareScans/releases/download/v0.2.0/comparescans --output comparescans
  chmod 0757 comparescans
 
 # Generate Metrics for two build scans using the DV API
-./comparescans --from api --first-build-scan $BUILD_SCAN_ID_1 --second-build-scan $BUILD_SCAN_ID_2 --api-key $DV_KEY --url $DV_URL
+./comparescans --from api --scans $BUILD_SCAN_ID_1 --scans $BUILD_SCAN_ID_2 --api-key $DV_KEY --url $DV_URL
+
+# Generate Metrics for four build scans using the DV API
+./comparescans --from api --scans $BUILD_SCAN_ID_1 --scans $BUILD_SCAN_ID_2 --scans $BUILD_SCAN_ID_3 --scans $BUILD_SCAN_ID_4 --api-key $DV_KEY --url $DV_URL
 
 # Generate Metrics and apply default rules two build scans using the DV API
-./comparescans --from api --first-build-scan $BUILD_SCAN_ID_1 --second-build-scan $BUILD_SCAN_ID_2 --api-key $DV_KEY --url $DV_URL --with-default-rules
+./comparescans --from api --scans $BUILD_SCAN_ID_1 --scans $BUILD_SCAN_ID_2 --api-key $DV_KEY --url $DV_URL --with-default-rules
 
 # Generate Metrics and apply default rules from an existing file
 ./comparescans --from file --with-default-rules
@@ -40,10 +43,10 @@ By comparing two build scans, you can infer information such as differences in t
 ./gradlew :cli:fatBinary
 cd cli
 # Generate Metrics for two build scans using the DV API
-./comparescans --from api --first-build-scan $BUILD_SCAN_ID_1 --second-build-scan $BUILD_SCAN_ID_2 --api-key $DV_KEY --url $DV_URL
+./comparescans --from api --scans $BUILD_SCAN_ID_1 --scans $BUILD_SCAN_ID_2 --api-key $DV_KEY --url $DV_URL
 
 # Generate Metrics and apply default rules two build scans using the DV API
-./comparescans --from api --first-build-scan $BUILD_SCAN_ID_1 --second-build-scan $BUILD_SCAN_ID_2 --api-key $DV_KEY --url $DV_URL --with-default-rules
+./comparescans --from api --scans $BUILD_SCAN_ID_1 --scans $BUILD_SCAN_ID_2 --api-key $DV_KEY --url $DV_URL --with-default-rules
 
 # Generate Metrics and apply default rules from an existing file
 ./comparescans --from file --with-default-rules
@@ -57,27 +60,25 @@ cd cli
 
 The CLI supports the following options:
 
-| Option                 | Description                                                                                           |
-|------------------------|-------------------------------------------------------------------------------------------------------|
-| `--from`               | Source of the metrics. Choices: `api`, `file`. Required.                                              |
-| `--api-key`            | API key for accessing the build scan API. Required if `--from` is `api`.                              |
-| `--url`                | URL of the build scan API. Required if `--from` is `api`.                                             |
-| `--first-build-scan`   | Identifier for the first build scan. Required if `--from` is `api`.                                   |
-| `--second-build-scan`  | Identifier for the second build scan. Required if `--from` is `api`.                                  |
-| `--with-default-rules` | Flag to use default rules. Optional.                                                                  |
-| `--custom-rules`       | File containing custom rules in YAML format. Optional.                                                |
-| `--metrics`            | File containing existing metrics in CSV format. Required if `--from` is `file`.                       |
+| Option                 | Description                                                                                                         |
+|------------------------|---------------------------------------------------------------------------------------------------------------------|
+| `--from`               | Source of the metrics. Choices: `api`, `file`. Required.                                                            |
+| `--api-key`            | API key for accessing the build scan API. Required if `--from` is `api`.                                            |
+| `--url`                | URL of the build scan API. Required if `--from` is `api`.                                                           |
+| `--scans`              | Identifier for the build scan to retrieve. Usage: `--scans $build1 --scans $build2`. Required if `--from` is `api`. |
+| `--with-default-rules` | Flag to use default rules. Optional.                                                                                |
+| `--custom-rules`       | File containing custom rules in YAML format. Optional.                                                              |
+| `--metrics`            | File containing existing metrics in CSV format. Required if `--from` is `file`.                                     |
 
 ### API Mode
 
 When `--from` is set to `api`, the CLI fetches metrics from a build scan API. The following options are required:
 
-| Option                 | Description                                                    |
-|------------------------|----------------------------------------------------------------|
-| `--api-key`            | API key for accessing the build scan API.                      |
-| `--url`                | URL of the build scan API.                                     |
-| `--first-build-scan`   | Identifier for the first build scan.                           |
-| `--second-build-scan`  | Identifier for the second build scan.                          |
+| Option                | Description                                                                            |
+|-----------------------|----------------------------------------------------------------------------------------|
+| `--api-key`           | API key for accessing the build scan API.                                              |
+| `--url`               | URL of the build scan API.                                                             |
+| `--scans`             | Identifier for the build scan to retrieve. Usage: `--scans $build1 --scans $build2`.   |
 
 Example command:
 
@@ -87,7 +88,7 @@ Example command:
 
 When using the CLI with the `--from api` option a file with the name `compare-$BUILD_SCAN_ID_1-$BUILD_SCAN_ID_2.csv` will be generated in the current directory. This file contains the metrics for the two build scans. For instance:
 ```csv
-entity,name,category,type,first build,second build
+entity,name,category,type, $build1, $build2
 Module,:build-logic:convention,all tasks,CacheSize,168857,168960
 Module,:build-logic:convention,all tasks,Duration,18272,17474
 Module,:build-logic:convention,all tasks,Counter,7,7
@@ -114,20 +115,22 @@ When `--from` is set to `file`, the CLI reads metrics from a CSV file. The follo
 Using the mode `--from file` we apply rules over an existing metrics comparison file from a previous execution. This mode also generates
 a file with the name `metrics-$firstBuild-$secondBuild.csv` in the current directory.
 
-<b>Note</b>: This mode is required to be used together with the rules functionality that is explained in the Rules section.
+<b>Note</b>:
+* This mode is required to be used together with the rules functionality that is explained in the Rules section.
+* Currently, this mode only supports the comparison of two builds.
 
 
 ## Metrics
 A `Metric` represents a measurement or statistic related to different aspects of a project, module, task, or task type within a build scan. Each metric is categorized by its entity type, metric type, and includes values from two builds for comparison.
 
-| Attribute     | Description                                                                                                                                                                                                          |
-|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `entity`      | The entity that this metric is associated with. It can be one of: `Project`, `Module`, `Task`, `TaskType`.                                                                                                           |
-| `type`        | The type of measurement. It can be one of: `Duration`, `DurationMedian`, `DurationMean`, `DurationP90`, `Counter`, `Fingerprinting`, `FingerprintingMedian`, `FingerprintingMean`, `FingerprintingP90`, `CacheSize`. |
-| `category`    | A string representing a category or additional classification for the metric.                                                                                                                                        |
-| `name`        | The name of the metric.                                                                                                                                                                                              |
-| `firstBuild`  | The value of the metric for the first build.                                                                                                                                                                         |
-| `secondBuild` | The value of the metric for the second build.                                                                                                                                                                        |
+| Attribute     | Description                                                                                                                                                                                                                                                                                                           |
+|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `entity`      | The entity that this metric is associated with. It can be one of: `Project`, `Module`, `Task`, `TaskType`, `ResourceUsage`.                                                                                                                                                                                           |
+| `type`        | The type of measurement. It can be one of: `Duration`, `DurationMedian`, `DurationMean`, `DurationP90`, `Counter`, `Fingerprinting`, `FingerprintingMedian`, `FingerprintingMean`, `FingerprintingP90`, `CacheSize`, `ResourceMax`, `ResourceMedian`, `ResourceAverage`, `ResourceP95`, `ResourceP75`, `ResourceP25`. |
+| `category`    | A string representing a category or additional classification for the metric.                                                                                                                                                                                                                                         |
+| `name`        | The name of the metric.                                                                                                                                                                                                                                                                                               |
+| `value`       | The value of the metric.                                                                                                                                                                                                                                                                                              |
+
 
 
 ## Rules
@@ -201,7 +204,7 @@ Additional to the csv file, If rules are matching the metrics, the CLI will outp
 If you don't want to use the CLI, the project can be used as a dependency. The project is available in the Maven Central Repository. You can add the dependency to your project using the following coordinates:
 
 ```kotlin
-implementation("io.github.cdsap:comparescans:0.1.2")
+implementation("io.github.cdsap:comparescans:0.2.0")
 ```
 
 ## Notes
