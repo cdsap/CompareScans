@@ -1,6 +1,6 @@
 package io.github.cdsap.comparescans.collector
 
-import io.github.cdsap.comparescans.RegularBuilds
+import io.github.cdsap.comparescans.MockBuilds
 import io.github.cdsap.comparescans.model.Entity
 import io.github.cdsap.comparescans.model.TypeMetric
 import kotlin.test.Test
@@ -9,29 +9,22 @@ class TaskMetricsCollectorTest {
 
     @Test
     fun taskMetricProcessesDuration() {
-        val (firstBuild, secondBuild) = RegularBuilds().returnBuilds()
-        val firstBuildTasks = firstBuild.taskExecution
-        val secondBuildTasks = secondBuild.taskExecution
+        val (firstBuild, secondBuild) = MockBuilds().returnBuilds()
+        val firstBuildTasks = firstBuild.build.taskExecution
+        val secondBuildTasks = secondBuild.build.taskExecution
 
-        val metric =
-            TaskMetricsCollector().metricsTasks(firstBuildTasks, secondBuildTasks)
-                .first { it.name == ":app:preBuild" && it.type == TypeMetric.Duration }
-        val firstDuration = firstBuild.taskExecution.first { it.taskPath == ":app:preBuild" }.duration
-        val secondDuration = secondBuild.taskExecution.first { it.taskPath == ":app:preBuild" }.duration
-        assert(metric.entity == Entity.Task)
-        assert(metric.type == TypeMetric.Duration)
-        assert(firstDuration == metric.firstBuild && secondDuration == metric.secondBuild)
-        val metricCache =
-            TaskMetricsCollector().metricsTasks(firstBuildTasks, secondBuildTasks)
-                .first { it.name == ":core:database:packageDemoDebugResources" && it.type == TypeMetric.CacheSize }
+        val firstMetric =
+            TaskMetricsCollector().singleMetricsTasks(firstBuildTasks, firstBuild.build.id)
+                .first { it.metric.name == ":app:preBuild" && it.metric.type == TypeMetric.Duration }
+        val secondMetric =
+            TaskMetricsCollector().singleMetricsTasks(secondBuildTasks, secondBuild.build.id)
+                .first { it.metric.name == ":app:preBuild" && it.metric.type == TypeMetric.Duration }
 
-        val firstCache =
-            firstBuild.taskExecution.first { it.taskPath == ":core:database:packageDemoDebugResources" }.cacheArtifactSize
-        val secondCache =
-            secondBuild.taskExecution.first { it.taskPath == ":core:database:packageDemoDebugResources" }.cacheArtifactSize
-
-        assert(metricCache.entity == Entity.Task)
-        assert(metricCache.type == TypeMetric.CacheSize)
-        assert(firstCache == metricCache.firstBuild && secondCache == metricCache.secondBuild)
+        val firstDuration = firstBuild.build.taskExecution.first { it.taskPath == ":app:preBuild" }.duration
+        val secondDuration = secondBuild.build.taskExecution.first { it.taskPath == ":app:preBuild" }.duration
+        assert(firstMetric.metric.entity == Entity.Task)
+        assert(firstMetric.metric.type == TypeMetric.Duration)
+        assert(firstDuration == firstMetric.value)
+        assert(secondDuration == secondMetric.value)
     }
 }
