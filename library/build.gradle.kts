@@ -11,7 +11,7 @@ version = "0.1.2"
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("io.github.cdsap:geapi-data:0.2.7")
+    implementation("io.github.cdsap:geapi-data:0.2.9")
     implementation("org.nield:kotlin-statistics:1.2.1")
     implementation("com.google.code.gson:gson:2.8.9")
     testImplementation(kotlin("test"))

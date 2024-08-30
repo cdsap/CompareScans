@@ -4,7 +4,5 @@ class Metric(
     val entity: Entity,
     val type: TypeMetric,
     val subcategory: String,
-    val name: String,
-    val firstBuild: Number,
-    val secondBuild: Number
+    val name: String
 )

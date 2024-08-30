@@ -4,5 +4,6 @@ enum class Entity {
     Project,
     Module,
     Task,
-    TaskType
+    TaskType,
+    ResourceUsage
 }

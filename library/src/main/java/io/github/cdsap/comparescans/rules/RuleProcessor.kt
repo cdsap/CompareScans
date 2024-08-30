@@ -1,19 +1,25 @@
 package io.github.cdsap.comparescans.rules
 
-import io.github.cdsap.comparescans.model.Metric
+import io.github.cdsap.comparescans.model.MultipleBuildScanMetric
 import io.github.cdsap.comparescans.model.Rule
 import io.github.cdsap.comparescans.model.TypeMetric
 
 class RuleProcessor {
 
-    fun ruleProcessor(metrics: List<Metric>, rules: List<Rule>): List<RuleMatched> {
-        // in cases like TaskTypes, it's possible we have a duplicated metric in case of the task type is only executing
-        // a given outcome
+    fun ruleProcessor(metrics: List<MultipleBuildScanMetric>, rules: List<Rule>): List<RuleMatched> {
+        val scanIds = metrics.flatMap { it.values.keys }.distinct()
+        println(scanIds.size)
+        require(scanIds.size == 2) { "This implementation only supports exactly two builds." }
+
+        val firstBuildId = scanIds[0]
+        val secondBuildId = scanIds[1]
+
+        // Filter metrics to avoid duplicates in case of task type is only executing a given outcome
         val filteredMetrics = metrics.groupBy { metric ->
-            Quintuple(metric.entity, metric.type, metric.name, metric.firstBuild, metric.secondBuild)
+            Quintuple(metric.metric.entity, metric.metric.type, metric.metric.name, metric.values[firstBuildId], metric.values[secondBuildId])
         }.flatMap { (_, groupedMetrics) ->
             if (groupedMetrics.size > 1) {
-                groupedMetrics.filter { it.subcategory != "all" }
+                groupedMetrics.filter { it.metric.subcategory != "all" }
             } else {
                 groupedMetrics
             }
@@ -23,19 +29,18 @@ class RuleProcessor {
 
         rules.forEach { rule ->
             filteredMetrics.filter {
-                it.entity == rule.entity && it.type == rule.type
+                it.metric.entity == rule.entity && it.metric.type == rule.type
             }.forEach {
-                when (it.type) {
+                val firstBuildValue = it.values[firstBuildId]?.toLong() ?: return@forEach
+                val secondBuildValue = it.values[secondBuildId]?.toLong() ?: return@forEach
+
+                when (it.metric.type) {
                     TypeMetric.Duration, TypeMetric.Fingerprinting, TypeMetric.DurationMedian, TypeMetric.DurationMean,
                     TypeMetric.FingerprintingMedian, TypeMetric.FingerprintingMean, TypeMetric.FingerprintingP90,
                     TypeMetric.DurationP90 -> {
                         if (rule.threshold != null) {
-                            if (it.firstBuild.toLong() > rule.threshold && it.secondBuild.toLong() > rule.threshold) {
-                                val diff =
-                                    absolutePercentageDifferenceWithSign(
-                                        it.firstBuild.toLong(),
-                                        it.secondBuild.toLong()
-                                    )
+                            if (firstBuildValue > rule.threshold && secondBuildValue > rule.threshold) {
+                                val diff = absolutePercentageDifferenceWithSign(firstBuildValue, secondBuildValue)
                                 if (rule.value == null) {
                                     ruleMatches.add(RuleMatched(it, rule, diff.first))
                                 } else if (diff.first >= rule.value!!.toDouble()) {
@@ -46,20 +51,16 @@ class RuleProcessor {
                     }
 
                     TypeMetric.Counter -> {
-                        if (it.firstBuild != it.secondBuild) {
-                            val difference = kotlin.math.abs(it.firstBuild.toLong() - it.secondBuild.toLong())
+                        if (firstBuildValue != secondBuildValue) {
+                            val difference = kotlin.math.abs(firstBuildValue - secondBuildValue)
                             ruleMatches.add(RuleMatched(it, rule, difference.toDouble()))
                         }
                     }
 
                     TypeMetric.CacheSize -> {
                         if (rule.threshold != null) {
-                            if (it.firstBuild.toLong() > rule.threshold && it.secondBuild.toLong() > rule.threshold) {
-                                val diff =
-                                    absolutePercentageDifferenceWithSign(
-                                        it.firstBuild.toLong(),
-                                        it.secondBuild.toLong()
-                                    )
+                            if (firstBuildValue > rule.threshold && secondBuildValue > rule.threshold) {
+                                val diff = absolutePercentageDifferenceWithSign(firstBuildValue, secondBuildValue)
                                 if (rule.value == null) {
                                     ruleMatches.add(RuleMatched(it, rule, diff.first))
                                 } else if (diff.first >= rule.value!!.toDouble()) {
@@ -68,6 +69,8 @@ class RuleProcessor {
                             }
                         }
                     }
+                    // not covering for now resource usage metrics
+                    else -> {}
                 }
             }
         }
@@ -84,7 +87,7 @@ data class Quintuple<A, B, C, D, E>(
 )
 
 data class RuleMatched(
-    val metric: Metric,
+    val metric: MultipleBuildScanMetric,
     val rule: Rule,
     val diff: Any
 )

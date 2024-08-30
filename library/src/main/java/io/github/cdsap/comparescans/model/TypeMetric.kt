@@ -10,5 +10,11 @@ enum class TypeMetric {
     FingerprintingMedian,
     FingerprintingMean,
     FingerprintingP90,
-    CacheSize
+    CacheSize,
+    ResourceMax,
+    ResourceMedian,
+    ResourceAverage,
+    ResourceP95,
+    ResourceP75,
+    ResourceP25
 }
