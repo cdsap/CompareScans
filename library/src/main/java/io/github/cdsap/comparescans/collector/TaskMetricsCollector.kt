@@ -1,6 +1,9 @@
 package io.github.cdsap.comparescans.collector
 
-import io.github.cdsap.comparescans.model.*
+import io.github.cdsap.comparescans.model.Entity
+import io.github.cdsap.comparescans.model.Measurement
+import io.github.cdsap.comparescans.model.Metric
+import io.github.cdsap.comparescans.model.TypeMetric
 import io.github.cdsap.geapi.client.model.Task
 
 class TaskMetricsCollector {
