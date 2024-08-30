@@ -24,19 +24,6 @@ import java.io.File
 
 fun main(args: Array<String>) {
     Experiment().main(args)
-//    val gson = Gson()
-//    val buildListType = object : TypeToken<List<BuildWithResourceUsage>>() {}.type
-//    GetApiMetrics(apiKey!!, url!!, scans).getMetrics()
-// //    val data: List<BuildWithResourceUsage> = gson.fromJson(File("builds.json").readText(), buildListType)
-// //
-// //
-// //    val a = MultipleScanMetrics(data).get()
-// //    a.filter { it.metric.entity == Entity.Project }.forEach {
-// //        println("-")
-// //        println(it.metric.entity)
-// //        println(it.values)
-// //    }
-//    CsvWriter(CsvWriter).metricsCsvMultipleScans(a, listOf("fqlukj7otcqek", "sctmqbxo3vd4q", "mky4xonu5cuwg", "wc5cbudsoalse"))
 }
 
 class Experiment : CliktCommand() {
