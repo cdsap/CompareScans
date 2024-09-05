@@ -39,8 +39,8 @@ class MultipleScanMetrics(private val builds: List<BuildWithResourceUsage>) {
         val taskMetrics = compareMetrics(taskMetricsList)
 
         val resourceUsageMetricList = builds.indices.map { i ->
-            if (builds[i].total != null) {
-                ResourceUsageCollector().measurementsResourceUsage(builds[i]!!, builds[i].id)
+            if (builds[i].total != null && builds[i].totalMemory != -1L) {
+                ResourceUsageCollector().measurementsResourceUsage(builds[i], builds[i].id)
             } else {
                 emptyList()
             }
