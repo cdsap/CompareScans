@@ -1,9 +1,9 @@
 package io.github.cdsap.comparescans
 
-import io.github.cdsap.comparescans.model.BuildWithResourceUsage
 import io.github.cdsap.geapi.client.domain.impl.GetSingleBuildCachePerformanceRequest
 import io.github.cdsap.geapi.client.domain.impl.GetSingleBuildResourceUsageRequest
 import io.github.cdsap.geapi.client.domain.impl.GetSingleBuildScanAttributesRequest
+import io.github.cdsap.geapi.client.model.BuildWithResourceUsage
 import io.github.cdsap.geapi.client.model.ClientType
 import io.github.cdsap.geapi.client.repository.impl.GradleRepositoryImpl
 
@@ -29,7 +29,6 @@ class GetBuildsData(
             } catch (e: Exception) {
                 null
             }
-
             if (buildScanAttributes == null || buildCachePerformance == null) {
                 throw IllegalArgumentException(
                     "Some of the expected data is null:\n" +
@@ -45,7 +44,17 @@ class GetBuildsData(
                         }
                 )
             }
-            builds.add(BuildWithResourceUsage(buildCachePerformance, usageResources))
+            usageResources.let {
+                it?.taskExecution = buildCachePerformance.taskExecution
+                it?.requestedTask = buildScanAttributes.requestedTasksGoals
+                it?.tags = buildScanAttributes.tags
+                it?.values = buildScanAttributes.values
+                it?.builtTool = buildScanAttributes.buildTool
+                it?.buildDuration = buildScanAttributes.buildDuration
+                it?.projectName = buildScanAttributes.projectName
+                it?.id = buildScan
+            }
+            builds.add(usageResources!!)
         }
         return builds
     }

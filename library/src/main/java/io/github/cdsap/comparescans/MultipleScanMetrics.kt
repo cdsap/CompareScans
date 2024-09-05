@@ -5,42 +5,42 @@ import io.github.cdsap.comparescans.collector.ProjectMetricsCollector
 import io.github.cdsap.comparescans.collector.ResourceUsageCollector
 import io.github.cdsap.comparescans.collector.TaskMetricsCollector
 import io.github.cdsap.comparescans.collector.TaskTypeCollector
-import io.github.cdsap.comparescans.model.BuildWithResourceUsage
 import io.github.cdsap.comparescans.model.Measurement
 import io.github.cdsap.comparescans.model.MultipleBuildScanMetric
+import io.github.cdsap.geapi.client.model.BuildWithResourceUsage
 
 class MultipleScanMetrics(private val builds: List<BuildWithResourceUsage>) {
 
     fun get(): List<MultipleBuildScanMetric> {
-        val buildTasks = builds.map { it.build.taskExecution }
+        val buildTasks = builds.map { it.taskExecution }
         val outcomes = buildTasks.map { tasks ->
             tasks.groupBy { it.avoidanceOutcome }.flatMap { listOf(it.key) }.distinct().toSet()
         }
 
         val projectMetricsList = builds.indices.map { i ->
-            ProjectMetricsCollector().projectMetrics(builds[i].build.taskExecution, outcomes[i], builds[i].build.id)
+            ProjectMetricsCollector().projectMetrics(builds[i].taskExecution, outcomes[i], builds[i].id)
         }
 
         val projectMetrics = compareMetrics(projectMetricsList)
 
         val taskTypeMetricsList = builds.indices.map { i ->
-            TaskTypeCollector().measurementTaskTypes(builds[i].build.taskExecution, outcomes[i], builds[i].build.id)
+            TaskTypeCollector().measurementTaskTypes(builds[i].taskExecution, outcomes[i], builds[i].id)
         }
         val taskTypeMetrics = compareMetrics(taskTypeMetricsList)
 
         val moduleMetricsList = builds.indices.map { i ->
-            ModuleMetricCollector().singleModuleMetrics(builds[i].build.taskExecution, outcomes[i], builds[i].build.id)
+            ModuleMetricCollector().singleModuleMetrics(builds[i].taskExecution, outcomes[i], builds[i].id)
         }
         val moduleMetrics = compareMetrics(moduleMetricsList)
 
         val taskMetricsList = builds.indices.map { i ->
-            TaskMetricsCollector().singleMetricsTasks(builds[i].build.taskExecution, builds[i].build.id)
+            TaskMetricsCollector().singleMetricsTasks(builds[i].taskExecution, builds[i].id)
         }
         val taskMetrics = compareMetrics(taskMetricsList)
 
         val resourceUsageMetricList = builds.indices.map { i ->
-            if (builds[i].usage?.total != null) {
-                ResourceUsageCollector().measurementsResourceUsage(builds[i].usage!!, builds[i].build.id)
+            if (builds[i].total != null) {
+                ResourceUsageCollector().measurementsResourceUsage(builds[i]!!, builds[i].id)
             } else {
                 emptyList()
             }
@@ -54,8 +54,8 @@ class MultipleScanMetrics(private val builds: List<BuildWithResourceUsage>) {
     private fun compareMetrics(metricsList: List<List<Measurement>>): List<MultipleBuildScanMetric> {
         val allMetrics = metricsList.flatten().map { it.metric }.toSet()
         return allMetrics.map { metric ->
-            val values = builds.map { it.build }.associate { build ->
-                val measurement = metricsList[builds.map { it.build }.indexOf(build)].find {
+            val values = builds.map { it }.associate { build ->
+                val measurement = metricsList[builds.map { it }.indexOf(build)].find {
                     it.metric.type == metric.type &&
                         it.metric.name == metric.name && it.metric.entity == metric.entity &&
                         it.metric.subcategory == metric.subcategory

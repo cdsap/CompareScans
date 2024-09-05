@@ -54,9 +54,7 @@ class Experiment : CliktCommand() {
                     validate(metrics != null) {
                         "Missing required parameters for file: example: --from file --existingMetrics <existingMetrics.csv>"
                     }
-                    val a = GetFileMetrics(metrics!!).getMetrics()
-                    println(a.size)
-                    a
+                    GetFileMetrics(metrics!!).getMetrics()
                 }
 
                 else -> {
