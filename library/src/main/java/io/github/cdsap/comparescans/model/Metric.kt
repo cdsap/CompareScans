@@ -1,6 +1,6 @@
 package io.github.cdsap.comparescans.model
 
-class Metric(
+data class Metric(
     val entity: Entity,
     val type: TypeMetric,
     val subcategory: String,
