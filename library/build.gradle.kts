@@ -7,11 +7,11 @@ plugins {
 }
 
 group = "io.github.cdsap"
-version = "0.2.0"
+version = "0.3.0"
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("io.github.cdsap:geapi-data:0.2.9")
+    implementation("io.github.cdsap:geapi-data:0.3.0")
     implementation("org.nield:kotlin-statistics:1.2.1")
     implementation("com.google.code.gson:gson:2.8.9")
     testImplementation(kotlin("test"))

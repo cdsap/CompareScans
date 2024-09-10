@@ -1,7 +1,7 @@
 package io.github.cdsap.comparescans
 
 import com.google.gson.Gson
-import io.github.cdsap.comparescans.model.BuildWithResourceUsage
+import io.github.cdsap.geapi.client.model.BuildWithResourceUsage
 
 class MockBuilds {
     fun returnBuilds(): Pair<BuildWithResourceUsage, BuildWithResourceUsage> {

@@ -10,38 +10,38 @@ class ProjectMetricsCollectorTest {
     @Test
     fun projectMetricsAreCollected() {
         val (firstBuild, secondBuild) = MockBuilds().returnBuilds()
-        val firstBuildTasks = firstBuild.build.taskExecution
-        val secondBuildTasks = secondBuild.build.taskExecution
+        val firstBuildTasks = firstBuild.taskExecution
+        val secondBuildTasks = secondBuild.taskExecution
 
         val outcomesFirst = firstBuildTasks.groupBy { it.avoidanceOutcome }.flatMap { listOf(it.key) }.distinct()
         val outcomesSecond = secondBuildTasks.groupBy { it.avoidanceOutcome }.flatMap { listOf(it.key) }.distinct()
         val outcomes = outcomesFirst.union(outcomesSecond)
 
-        val metric = ProjectMetricsCollector().projectMetrics(firstBuildTasks, outcomes, firstBuild.build.id)
+        val metric = ProjectMetricsCollector().projectMetrics(firstBuildTasks, outcomes, firstBuild.id)
         val firstBuildModules =
-            firstBuild.build.taskExecution.groupBy { it.taskPath.split(":").dropLast(1).joinToString(":") }.count()
+            firstBuild.taskExecution.groupBy { it.taskPath.split(":").dropLast(1).joinToString(":") }.count()
         val secondBuildModules =
-            secondBuild.build.taskExecution.groupBy { it.taskPath.split(":").dropLast(1).joinToString(":") }.count()
+            secondBuild.taskExecution.groupBy { it.taskPath.split(":").dropLast(1).joinToString(":") }.count()
         val firstMetricProjectModules = metric.filter {
             it.metric.entity == Entity.Project &&
                 it.metric.type == TypeMetric.Counter && it.metric.name == "modules" &&
-                it.variant == firstBuild.build.id
+                it.variant == firstBuild.id
         }.first()
         val secondMetricProjectModules = metric.filter {
             it.metric.entity == Entity.Project &&
                 it.metric.type == TypeMetric.Counter && it.metric.name == "modules" &&
-                it.variant == secondBuild.build.id
+                it.variant == secondBuild.id
         }.first()
 
         val firstMetricProjectTasks = metric.filter {
             it.metric.entity == Entity.Project &&
                 it.metric.type == TypeMetric.Counter && it.metric.name == "tasks" &&
-                it.variant == firstBuild.build.id
+                it.variant == firstBuild.id
         }.first()
         val secondMetricProjectTasks = metric.filter {
             it.metric.entity == Entity.Project &&
                 it.metric.type == TypeMetric.Counter && it.metric.name == "tasks" &&
-                it.variant == secondBuild.build.id
+                it.variant == secondBuild.id
         }.first()
 
         assert(metric.any { it.metric.entity == Entity.Project })
@@ -49,21 +49,21 @@ class ProjectMetricsCollectorTest {
         assert(metric.any { it.metric.name == "modules" })
         assert(firstBuildModules == firstMetricProjectModules.value)
         assert(secondBuildModules == secondMetricProjectModules.value)
-        assert(firstBuild.build.taskExecution.size == firstMetricProjectTasks.value)
-        assert(secondBuild.build.taskExecution.size == secondMetricProjectTasks.value)
+        assert(firstBuild.taskExecution.size == firstMetricProjectTasks.value)
+        assert(secondBuild.taskExecution.size == secondMetricProjectTasks.value)
     }
 
     @Test
     fun projectMetricsCalculateCorrectlyThePercentiles() {
         val firstBuild = MockBuilds().returnSimpleBuilds()
-        val firstBuildTasks = firstBuild.build.taskExecution
+        val firstBuildTasks = firstBuild.taskExecution
 
         val outcomesFirst = firstBuildTasks.groupBy { it.avoidanceOutcome }.flatMap { listOf(it.key) }.distinct()
         val metric =
-            ProjectMetricsCollector().projectMetrics(firstBuildTasks, outcomesFirst.toSet(), firstBuild.build.id)
+            ProjectMetricsCollector().projectMetrics(firstBuildTasks, outcomesFirst.toSet(), firstBuild.id)
         val p90 = metric.first { it.metric.entity == Entity.Project && it.metric.type == TypeMetric.DurationP90 }
-        assert(p90.value == 1540.0)
+        assert(p90.value == 368.0)
         val median = metric.first { it.metric.entity == Entity.Project && it.metric.type == TypeMetric.DurationMedian }
-        assert(median.value == 26.0)
+        assert(median.value == 7.0)
     }
 }
