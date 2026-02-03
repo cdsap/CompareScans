@@ -1,8 +1,8 @@
 # CompareScans CLI
 
-This project provides a command-line interface (CLI) for comparing build scans and applying custom rules to analyze the metrics. The CLI supports fetching metrics from the Develocity API or a file and applying default or custom rules to these metrics.
+This project provides a command-line interface (CLI) for comparing Build Scans® and applying custom rules to analyze the metrics. The CLI supports fetching metrics from the Develocity API or a file and applying default or custom rules to these metrics.
 
-By comparing build scans, you can infer information such as differences in the number of modules, tasks, or even explore detailed percentiles of durations for specific task types. Additionally, the CLI can provide analysis of cache artifact sizes between builds. It is important to note that this type of analysis does not necessarily imply that the builds are close in terms of execution time. Comparing builds from different time ranges can offer valuable insights into how the project has grown over time.
+By comparing Build Scans®, you can infer information such as differences in the number of modules, tasks, or even explore detailed percentiles of durations for specific task types. Additionally, the CLI can provide analysis of cache artifact sizes between builds. It is important to note that this type of analysis does not necessarily imply that the builds are close in terms of execution time. Comparing builds from different time ranges can offer valuable insights into how the project has grown over time.
 ## Table of Contents
 
 
@@ -86,7 +86,7 @@ Example command:
 ./comparescans --from api --apiKey yourApiKey --url yourUrl --firstBuildScan yourFirstBuildScan --secondBuildScan yourSecondBuildScan
 ```
 
-When using the CLI with the `--from api` option a file with the name `compare-$BUILD_SCAN_ID_1-$BUILD_SCAN_ID_2.csv` will be generated in the current directory. This file contains the metrics for the two build scans. For instance:
+When using the CLI with the `--from api` option a file with the name `compare-$BUILD_SCAN_ID_1-$BUILD_SCAN_ID_2.csv` will be generated in the current directory. This file contains the metrics for the two  Build Scans®. For instance:
 ```csv
 entity,name,category,type, $build1, $build2
 Module,:build-logic:convention,all tasks,CacheSize,168857,168960
@@ -136,7 +136,7 @@ A `Metric` represents a measurement or statistic related to different aspects of
 ## Rules
 Once metrics are provided by the modes (API or File), you can apply rules configured in a YAML file to filter and analyze
 these metrics. The rules functionality allows you to specify conditions that metrics must meet to be considered significant.
-This is useful for identifying performance regressions or improvements between build scans.
+This is useful for identifying performance regressions or improvements between  Build Scans®.
 For instance:
 ```yaml
 rules:
